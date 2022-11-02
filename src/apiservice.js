@@ -7,8 +7,10 @@ const SOURCE_SRV =
 export default class ApiService {
   constructor() {
     this.page = 1;
+    this.per_page = 40;
     this.searchQuery = '';
   }
+
   async getImg(searchNameImg) {
     try {
       const searchString = `${SOURCE_SRV}&q=${searchNameImg}&image_type=photo&orientation=horizontal&safesearch=true`;

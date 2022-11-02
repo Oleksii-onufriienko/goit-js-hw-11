@@ -1,11 +1,11 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
 import ApiService from './apiservice';
 import MarkupService from './markupservice';
 
 const refs = {
   form: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
+  button: document.querySelector('button.load-more'),
 };
 
 refs.form.addEventListener('submit', handleSubmit);
@@ -15,8 +15,8 @@ markupGallery = new MarkupService(refs.gallery);
 async function handleSubmit(event) {
   const searchNameImg = event.currentTarget.searchQuery.value.trim();
   event.preventDefault();
-  let imgList = [];
-  imgList = await imageApiService.getImg(searchNameImg);
+
+  const imgList = await imageApiService.getImg(searchNameImg);
   markupGallery.resetMarkup();
 
   if (imgList.length === 0) {

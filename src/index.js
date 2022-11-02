@@ -13,10 +13,16 @@ refs.button.addEventListener('click', handleButton);
 
 imageApiService = new ApiService(20);
 markupGallery = new MarkupService(refs.gallery);
+hiddenButton(refs.button);
 
 async function handleSubmit(event) {
   const searchNameImg = event.currentTarget.searchQuery.value.trim();
   event.preventDefault();
+  if (searchNameImg === '') {
+    markupGallery.resetMarkup();
+    hiddenButton(refs.button);
+    return;
+  }
   //  при сабмите формы начинаем рендерить с первой страницы
   imageApiService.currentPage = 1;
   const imgList = await imageApiService.getImg(searchNameImg);
@@ -31,6 +37,7 @@ async function handleSubmit(event) {
   markupGallery.imagesArray = imgList;
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
+  showButton(refs.button);
 }
 
 async function handleButton(event) {
@@ -41,4 +48,14 @@ async function handleButton(event) {
   markupGallery.renderMarkup();
 
   console.log('всего картинок', imageApiService.totalHits);
+}
+
+function hiddenButton(reference) {
+  reference.disabled = true;
+  reference.style.display = 'none';
+}
+
+function showButton(reference) {
+  reference.disabled = false;
+  reference.style.display = 'block';
 }

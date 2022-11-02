@@ -9,8 +9,10 @@ export default class ApiService {
     this.page = 1;
     this.per_page = per_page;
     this.imageList = [];
-    this.totalImages = 0;
+    this.totalHits = 0;
     this.searchQuery = '';
+    // общий счетчик загруженых картинок
+    this.renderCount = 0;
   }
 
   async getImg(searchNameImg) {
@@ -20,7 +22,11 @@ export default class ApiService {
       const response = await axios.get(searchString);
       this.page += 1;
       this.imageList = response.data.hits;
-      this.totalImages = response.data.totalHits;
+      this.totalHits = response.data.totalHits;
+      this.renderCount += this.imageList.length;
+      // если запрос не первый выводим сообщение
+      if (this.page > 2)
+        Notify.info(`Hooray! We found ${this.totalHits} images.`);
       return this.imageList;
     } catch (error) {
       Notify.failure(
@@ -30,13 +36,11 @@ export default class ApiService {
     }
   }
 
-  set currentPage(a) {
-    this.page = a;
+  resetRenderCount() {
+    this.renderCount = 0;
   }
-  get currentPage() {
-    return this.page;
-  }
-  get totalHits() {
-    return this.totalImages;
+  endLibrary() {
+    if (this.renderCount === this.totalHits) return true;
+    return false;
   }
 }

@@ -2,6 +2,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import ApiService from './apiservice';
 import MarkupService from './markupservice';
 
+const RENDER_ITEM_COUNT = 20;
+
 const refs = {
   form: document.querySelector('#search-form'),
   gallery: document.querySelector('.gallery'),
@@ -11,20 +13,22 @@ const refs = {
 refs.form.addEventListener('submit', handleSubmit);
 refs.button.addEventListener('click', handleButton);
 
-imageApiService = new ApiService(20);
+imageApiService = new ApiService(RENDER_ITEM_COUNT);
 markupGallery = new MarkupService(refs.gallery);
 hiddenButton(refs.button);
 
 async function handleSubmit(event) {
   const searchNameImg = event.currentTarget.searchQuery.value.trim();
   event.preventDefault();
+  imageApiService.resetRenderCount();
+  //  при сабмите формы начинаем рендерить с первой страницы
+  imageApiService.page = 1;
   if (searchNameImg === '') {
     markupGallery.resetMarkup();
     hiddenButton(refs.button);
     return;
   }
-  //  при сабмите формы начинаем рендерить с первой страницы
-  imageApiService.currentPage = 1;
+
   const imgList = await imageApiService.getImg(searchNameImg);
 
   markupGallery.resetMarkup();
@@ -37,17 +41,25 @@ async function handleSubmit(event) {
   markupGallery.imagesArray = imgList;
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
-  showButton(refs.button);
+  verifyEndLibraryToggleButton(refs.button);
 }
 
 async function handleButton(event) {
-  console.log(imageApiService);
-
   markupGallery.imagesArray = await imageApiService.getImg();
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
+  verifyEndLibraryToggleButton(refs.button);
+}
 
-  console.log('всего картинок', imageApiService.totalHits);
+function verifyEndLibraryToggleButton(reference) {
+  if (imageApiService.endLibrary()) {
+    hiddenButton(reference);
+    Notify.warning(
+      "We're sorry, but you've reached the end of search results."
+    );
+    return;
+  }
+  showButton(reference);
 }
 
 function hiddenButton(reference) {

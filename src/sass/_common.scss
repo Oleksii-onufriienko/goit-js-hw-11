@@ -14,6 +14,14 @@ body {
     line-height: 1.5;
 }
 
+.gallery {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-basis: calc((100% - 10px) / 4);
+}
+
 .search-form {
     display: block;
     padding-top: 30px;
@@ -21,4 +29,24 @@ body {
     background: blue;
     text-align: center;
 
+}
+
+.photo-card {
+    display: block;
+
+
+}
+
+.photo-img {
+    max-width: 400px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-around;
+}
+
+.info-item {
+    font-size: 12px;
+    text-align: center;
 }

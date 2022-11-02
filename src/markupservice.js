@@ -38,7 +38,7 @@ export default class MarkupService {
   }
 
   renderMarkup() {
-    this.ref.innerHTML = this.markup;
+    this.ref.insertAdjacentHTML('beforeend', this.markup);
   }
 
   set imagesArray(a) {

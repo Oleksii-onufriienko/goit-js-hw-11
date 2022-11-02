@@ -9,16 +9,19 @@ const refs = {
 };
 
 refs.form.addEventListener('submit', handleSubmit);
-imageApiService = new ApiService();
+refs.button.addEventListener('click', handleButton);
+
+imageApiService = new ApiService(20);
 markupGallery = new MarkupService(refs.gallery);
 
 async function handleSubmit(event) {
   const searchNameImg = event.currentTarget.searchQuery.value.trim();
   event.preventDefault();
-
+  //  при сабмите формы начинаем рендерить с первой страницы
+  imageApiService.currentPage = 1;
   const imgList = await imageApiService.getImg(searchNameImg);
-  markupGallery.resetMarkup();
 
+  markupGallery.resetMarkup();
   if (imgList.length === 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -28,4 +31,14 @@ async function handleSubmit(event) {
   markupGallery.imagesArray = imgList;
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
+}
+
+async function handleButton(event) {
+  console.log(imageApiService);
+
+  markupGallery.imagesArray = await imageApiService.getImg();
+  markupGallery.makeCardMarkup();
+  markupGallery.renderMarkup();
+
+  console.log('всего картинок', imageApiService.totalHits);
 }

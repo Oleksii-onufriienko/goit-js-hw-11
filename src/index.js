@@ -19,7 +19,6 @@ refs.button.addEventListener('click', handleButton);
 let imageApiService = new ApiService(RENDER_ITEM_COUNT);
 let markupGallery = new MarkupService(refs.gallery);
 // let simpleLightbox = new SimpleLightbox('.gallery a', {});
-console.log(simpleLightbox);
 
 hiddenButton(refs.button);
 

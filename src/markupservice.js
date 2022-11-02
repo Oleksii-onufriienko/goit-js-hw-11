@@ -1,3 +1,6 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 export default class MarkupService {
   constructor(reference) {
     this.ref = reference;
@@ -16,8 +19,11 @@ export default class MarkupService {
     }
     this.markup = this.imgList
       .map(element => {
-        return `<div class="photo-card">
-          <img class="photo-img" src="${element.webformatURL}" alt="${element.tags}" loading="lazy" />
+        return `
+           <div class="photo-card">
+           <a class="card-ref" href="${element.largeImageURL}">
+            <img class="photo-img" src="${element.webformatURL}" alt="${element.tags}" loading="lazy" />
+          </a>
           <div class="info">
             <p class="info-item">
               <b>Likes</b><br>${element.likes}
@@ -32,7 +38,8 @@ export default class MarkupService {
               <b>Downloads</b><br>${element.downloads}
             </p>
           </div>
-        </div>`;
+        </div>
+`;
       })
       .join('');
   }

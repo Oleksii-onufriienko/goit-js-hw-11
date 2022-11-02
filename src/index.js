@@ -1,8 +1,11 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import simpleLightbox from 'simplelightbox';
 import ApiService from './apiservice';
 import MarkupService from './markupservice';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const RENDER_ITEM_COUNT = 20;
+const RENDER_ITEM_COUNT = 40;
 
 const refs = {
   form: document.querySelector('#search-form'),
@@ -13,8 +16,11 @@ const refs = {
 refs.form.addEventListener('submit', handleSubmit);
 refs.button.addEventListener('click', handleButton);
 
-imageApiService = new ApiService(RENDER_ITEM_COUNT);
-markupGallery = new MarkupService(refs.gallery);
+let imageApiService = new ApiService(RENDER_ITEM_COUNT);
+let markupGallery = new MarkupService(refs.gallery);
+// let simpleLightbox = new SimpleLightbox('.gallery a', {});
+console.log(simpleLightbox);
+
 hiddenButton(refs.button);
 
 async function handleSubmit(event) {
@@ -41,6 +47,8 @@ async function handleSubmit(event) {
   markupGallery.imagesArray = imgList;
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
+  let simpleLightbox = new SimpleLightbox('.gallery a', {});
+  //   simpleLightbox.refresh();
   verifyEndLibraryToggleButton(refs.button);
 }
 
@@ -48,6 +56,7 @@ async function handleButton(event) {
   markupGallery.imagesArray = await imageApiService.getImg();
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
+
   verifyEndLibraryToggleButton(refs.button);
 }
 

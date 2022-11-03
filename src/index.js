@@ -48,6 +48,14 @@ async function handleSubmit(event) {
   markupGallery.renderMarkup();
   simpleLightbox.refresh();
   verifyEndLibraryToggleButton(refs.button);
+  // плавная прокрутка
+  const { height: cardHeight } =
+    refs.gallery.firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
 
 async function handleButton(event) {

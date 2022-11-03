@@ -1,7 +1,7 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import simpleLightbox from 'simplelightbox';
 import ApiService from './apiservice';
 import MarkupService from './markupservice';
+
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -18,7 +18,7 @@ refs.button.addEventListener('click', handleButton);
 
 let imageApiService = new ApiService(RENDER_ITEM_COUNT);
 let markupGallery = new MarkupService(refs.gallery);
-// let simpleLightbox = new SimpleLightbox('.gallery a', {});
+let simpleLightbox = new SimpleLightbox('.gallery a');
 
 hiddenButton(refs.button);
 
@@ -46,8 +46,7 @@ async function handleSubmit(event) {
   markupGallery.imagesArray = imgList;
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
-  let simpleLightbox = new SimpleLightbox('.gallery a', {});
-  //   simpleLightbox.refresh();
+  simpleLightbox.refresh();
   verifyEndLibraryToggleButton(refs.button);
 }
 
@@ -55,7 +54,7 @@ async function handleButton(event) {
   markupGallery.imagesArray = await imageApiService.getImg();
   markupGallery.makeCardMarkup();
   markupGallery.renderMarkup();
-
+  simpleLightbox.refresh();
   verifyEndLibraryToggleButton(refs.button);
 }
 

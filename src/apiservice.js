@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const SOURCE_SRV =
   'https://pixabay.com/api/?key=31033465-5993d082d5a9a4a2e6778e4ca';
@@ -24,14 +23,8 @@ export default class ApiService {
       this.imageList = response.data.hits;
       this.totalHits = response.data.totalHits;
       this.renderCount += this.imageList.length;
-      // если запрос не первый выводим сообщение
-      if (this.page > 2)
-        Notify.info(`Hooray! We found ${this.totalHits} images.`);
       return this.imageList;
     } catch (error) {
-      Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
       return [];
     }
   }
@@ -39,8 +32,15 @@ export default class ApiService {
   resetRenderCount() {
     this.renderCount = 0;
   }
-  endLibrary() {
-    if (this.renderCount === this.totalHits) return true;
-    return false;
+
+  get endLibrary() {
+    // возвращает 0 если все загружены и в библиотеке <= елементов, чем per_pag
+    // возвращает 1 если все загружены и в библиотеке больше елементов, чем per_page
+    // возвращает 2 если если загружены не все элементы библиотеки
+    if (this.totalHits === this.renderCount && this.totalHits <= this.per_page)
+      return 0;
+    if (this.totalHits === this.renderCount && this.totalHits > this.per_page)
+      return 1;
+    return 2;
   }
 }

@@ -26,17 +26,16 @@ async function handleSubmit(event) {
   const searchNameImg = event.currentTarget.searchQuery.value.trim();
   event.preventDefault();
   imageApiService.resetRenderCount();
+  markupGallery.resetMarkup();
   //  при сабмите формы начинаем рендерить с первой страницы
   imageApiService.page = 1;
   if (searchNameImg === '') {
-    markupGallery.resetMarkup();
     hiddenButton(refs.button);
     return;
   }
 
   const imgList = await imageApiService.getImg(searchNameImg);
 
-  markupGallery.resetMarkup();
   if (imgList.length === 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -48,14 +47,7 @@ async function handleSubmit(event) {
   markupGallery.renderMarkup();
   simpleLightbox.refresh();
   verifyEndLibraryToggleButton(refs.button);
-  // плавная прокрутка
-  const { height: cardHeight } =
-    refs.gallery.firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
+  Notify.info(`Hooray! We found ${imageApiService.totalHits} images.`);
 }
 
 async function handleButton(event) {
@@ -67,14 +59,21 @@ async function handleButton(event) {
 }
 
 function verifyEndLibraryToggleButton(reference) {
-  if (imageApiService.endLibrary()) {
-    hiddenButton(reference);
-    Notify.warning(
-      "We're sorry, but you've reached the end of search results."
-    );
-    return;
+  switch (imageApiService.endLibrary) {
+    case 0:
+      hiddenButton(reference);
+      break;
+    case 1:
+      hiddenButton(reference);
+      Notify.warning(
+        "We're sorry, but you've reached the end of search results."
+      );
+      break;
+    case 2:
+      showButton(reference);
+      break;
   }
-  showButton(reference);
+  return;
 }
 
 function hiddenButton(reference) {

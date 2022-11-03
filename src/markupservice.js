@@ -43,8 +43,8 @@ export default class MarkupService {
       .join('');
   }
 
-  renderMarkup() {
-    this.ref.insertAdjacentHTML('beforeend', this.markup);
+  async renderMarkup() {
+    await this.ref.insertAdjacentHTML('beforeend', this.markup);
   }
 
   set imagesArray(a) {

@@ -20,19 +20,16 @@ let imageApiService = new ApiService(RENDER_ITEM_COUNT);
 let markupGallery = new MarkupService(refs.gallery);
 let simpleLightbox = new SimpleLightbox('.gallery a');
 
-hiddenButton(refs.button);
-
 async function handleSubmit(event) {
   const searchNameImg = event.currentTarget.searchQuery.value.trim();
+  hiddenButton(refs.button);
   event.preventDefault();
   imageApiService.resetRenderCount();
   markupGallery.resetMarkup();
+
   //  при сабмите формы начинаем рендерить с первой страницы
   imageApiService.page = 1;
-  if (searchNameImg === '') {
-    hiddenButton(refs.button);
-    return;
-  }
+  if (searchNameImg === '') return;
 
   const imgList = await imageApiService.getImg(searchNameImg);
 
@@ -44,25 +41,28 @@ async function handleSubmit(event) {
   }
   markupGallery.imagesArray = imgList;
   markupGallery.makeCardMarkup();
-  markupGallery.renderMarkup();
-  simpleLightbox.refresh();
-  verifyEndLibraryToggleButton(refs.button);
-  Notify.info(`Hooray! We found ${imageApiService.totalHits} images.`);
+  markupGallery.renderMarkup().then(() => {
+    simpleLightbox.refresh();
+    verifyEndLibraryToggleButton(refs.button);
+    Notify.info(`Hooray! We found ${imageApiService.totalHits} images.`);
+  });
 }
 
 async function handleButton(event) {
+  hiddenButton(refs.button);
   markupGallery.imagesArray = await imageApiService.getImg();
   markupGallery.makeCardMarkup();
-  markupGallery.renderMarkup();
-  simpleLightbox.refresh();
-  verifyEndLibraryToggleButton(refs.button);
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
+  markupGallery.renderMarkup().then(() => {
+    simpleLightbox.refresh();
+    verifyEndLibraryToggleButton(refs.button);
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
 
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   });
 }
 

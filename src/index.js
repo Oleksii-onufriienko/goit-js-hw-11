@@ -56,6 +56,14 @@ async function handleButton(event) {
   markupGallery.renderMarkup();
   simpleLightbox.refresh();
   verifyEndLibraryToggleButton(refs.button);
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
 
 function verifyEndLibraryToggleButton(reference) {
